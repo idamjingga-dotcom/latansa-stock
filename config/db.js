@@ -5,13 +5,13 @@ const db = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306
+  port: Number(process.env.DB_PORT)
 });
 
 db.connect((err) => {
   if (err) {
-    console.log("Database gagal terhubung");
-    console.log(err);
+    console.error("Database gagal terhubung");
+    console.error(err);
   } else {
     console.log("Database LATANSA berhasil terhubung");
   }
