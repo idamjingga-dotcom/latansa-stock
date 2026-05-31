@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Kurangi Stock</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card p-4">
+
+<h3>Kurangi Stock</h3>
+
+<p>
+Produk:
+<b><%= produk.nama_produk %></b>
+</p>
+
+<p>
+Stock Saat Ini:
+<b><%= produk.stock %></b>
+</p>
+
+<form method="POST" action="/stock/kurang/<%= produk.id %>">
+
+<input
+type="number"
+name="qty"
+class="form-control mb-3"
+placeholder="Jumlah Stock"
+required>
+
+<button class="btn btn-danger">
+Kurangi Stock
+</button>
+
+<a href="/produk" class="btn btn-secondary">
+Kembali
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>
