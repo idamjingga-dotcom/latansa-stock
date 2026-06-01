@@ -1,5 +1,12 @@
 const mysql = require("mysql2");
+db.query("SHOW TABLES", (err, rows) => {
+  console.log("DAFTAR TABEL:");
+  console.log(rows);
 
+  if (err) {
+    console.log("ERROR DB:", err);
+  }
+});
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
