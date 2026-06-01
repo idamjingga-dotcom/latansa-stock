@@ -1,4 +1,3 @@
-throw new Error("CONFIG DB TEST");
 const mysql = require("mysql2");
 
 console.log("MYSQLHOST:", process.env.MYSQLHOST);
