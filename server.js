@@ -1,6 +1,12 @@
 require("dotenv").config();
 const fs = require("fs");
+console.log("ENV FILE EXISTS =", fs.existsSync(".env"));
+console.log("ENV =", fs.readdirSync("."));
 
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
+const db = require("./config/db");
 console.log("ENV FILE EXISTS =", fs.existsSync(".env"));
 console.log("CURRENT DIR =", process.cwd());
 const express = require("express");
