@@ -6,7 +6,10 @@ console.log("ENV =", fs.readdirSync("."));
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const db = require("./config/db");
+const db = require("./config/db.js");
+
+console.log("SERVER DB =", db);
+console.log("SERVER QUERY =", typeof db.query);
 
 console.log("DB TYPE =", typeof db);
 console.log("DB =", db);
