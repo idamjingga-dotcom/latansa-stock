@@ -389,7 +389,6 @@ app.post("/konsumen/tambah", (req, res) => {
   );
 
 });
-// HALAMAN TRANSAKSI
 app.get("/transaksi", (req, res) => {
 
   db.query(
@@ -404,10 +403,26 @@ app.get("/transaksi", (req, res) => {
 
           if (err) return res.send(err);
 
-          res.render("transaksi", {
-            customers,
-            products
-          });
+          db.query(
+            `SELECT
+              t.*,
+              c.nama
+            FROM transactions t
+            LEFT JOIN customers c
+            ON c.id = t.customer_id
+            ORDER BY t.id DESC`,
+            (err, transaksi) => {
+
+              if (err) return res.send(err);
+
+              res.render("transaksi", {
+                customers,
+                products,
+                transaksi
+              });
+
+            }
+          );
 
         }
       );
@@ -416,7 +431,10 @@ app.get("/transaksi", (req, res) => {
   );
 
 });
+// SIMPAN TRANSAKSI
 app.post("/transaksi/simpan", (req, res) => {
+
+  console.log("ROUTE TRANSAKSI TERPANGGIL");
 
   const {
     customer_id,
@@ -425,12 +443,21 @@ app.post("/transaksi/simpan", (req, res) => {
     harga,
     bayar
   } = req.body;
+  app.post("/transaksi/simpan", (req, res) => {
 
-  const total = qty * harga;
-  const sisa = total - bayar;
+  console.log("ROUTE TRANSAKSI TERPANGGIL");
+  console.log(req.body);
+
+  res.send("POST BERHASIL MASUK");
+
+});
+  const total = Number(qty) * Number(harga);
+  const sisa = total - Number(bayar);
 
   const status =
-    sisa <= 0 ? "LUNAS" : "BELUM LUNAS";
+    sisa <= 0
+      ? "LUNAS"
+      : "BELUM LUNAS";
 
   db.query(
     "INSERT INTO transactions(customer_id,total,bayar,sisa,status) VALUES(?,?,?,?,?)",
@@ -443,7 +470,10 @@ app.post("/transaksi/simpan", (req, res) => {
     ],
     (err, result) => {
 
-      if (err) return res.send(err);
+      if (err) {
+        console.log(err);
+        return res.send(err);
+      }
 
       const transaksiId = result.insertId;
 
@@ -455,20 +485,28 @@ app.post("/transaksi/simpan", (req, res) => {
           qty,
           harga,
           total
-        ]
-      );
+        ],
+        (err) => {
 
-      db.query(
-        "UPDATE products SET stock = stock - ? WHERE id=?",
-        [qty, product_id]
-      );
+          if (err) {
+            console.log(err);
+            return res.send(err);
+          }
 
-      db.query(
-        "INSERT INTO stock_history(product_id,tipe,qty) VALUES(?,?,?)",
-        [product_id, "keluar", qty]
-      );
+          db.query(
+            "UPDATE products SET stock = stock - ? WHERE id=?",
+            [qty, product_id]
+          );
 
-      res.redirect("/transaksi");
+          db.query(
+            "INSERT INTO stock_history(product_id,tipe,qty) VALUES(?,?,?)",
+            [product_id, "keluar", qty]
+          );
+
+          res.redirect("/transaksi");
+
+        }
+      );
 
     }
   );
@@ -723,15 +761,71 @@ app.get("/export/transaksi", async (req, res) => {
   );
 
 });
+// CETAK INVOICE
+app.get("/invoice/:id", (req, res) => {
+
+  db.query(
+    `
+    SELECT
+      t.*,
+      c.nama
+    FROM transactions t
+    LEFT JOIN customers c
+    ON c.id = t.customer_id
+    WHERE t.id=?
+    `,
+    [req.params.id],
+    (err, trxRows) => {
+
+      if (err) return res.send(err);
+
+      if (trxRows.length === 0) {
+        return res.send("Invoice tidak ditemukan");
+      }
+
+      const trx = trxRows[0];
+
+      db.query(
+        `
+        SELECT
+          ti.*,
+          p.nama_produk
+        FROM transaction_items ti
+        LEFT JOIN products p
+        ON p.id = ti.product_id
+        WHERE ti.transaction_id=?
+        `,
+        [req.params.id],
+        (err, items) => {
+
+          if (err) return res.send(err);
+
+          res.render("invoice", {
+            trx,
+            items
+          });
+
+        }
+      );
+
+    }
+  );
+
+});
 // LOGOUT
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 });
-
+console.log("REGISTER ROUTE TRANSAKSI");
+app.post("/cekroute", (req, res) => {
+  res.send("ROUTE AKTIF");
+});
+app.get("/tes123", (req, res) => {
+  res.send("SERVER LATANSA TERBARU");
+});
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log("=== SERVER BARU LATANSA AKTIF ===");
 });
