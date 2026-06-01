@@ -1,5 +1,10 @@
 const mysql = require("mysql2");
 
+console.log("MYSQLHOST:", process.env.MYSQLHOST);
+console.log("MYSQLPORT:", process.env.MYSQLPORT);
+console.log("MYSQLUSER:", process.env.MYSQLUSER);
+console.log("MYSQLDATABASE:", process.env.MYSQLDATABASE);
+
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -7,14 +12,3 @@ const db = mysql.createConnection({
   database: process.env.MYSQLDATABASE,
   port: Number(process.env.MYSQLPORT)
 });
-
-db.connect((err) => {
-  if (err) {
-    console.error("Database gagal terhubung");
-    console.error(err);
-  } else {
-    console.log("Database LATANSA berhasil terhubung");
-  }
-});
-
-module.exports = db;
