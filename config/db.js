@@ -1,3 +1,4 @@
+throw new Error("CONFIG DB TEST");
 const mysql = require("mysql2");
 
 console.log("MYSQLHOST:", process.env.MYSQLHOST);
@@ -16,6 +17,5 @@ console.log("DB OBJECT =", db);
 console.log("DB QUERY TYPE =", typeof db.query);
 
 module.exports = db;
-
-console.log("CONFIG DB LOADED");
-console.log(module.exports);
+console.log("DB QUERY TYPE =", typeof db.query);
+console.log("MYSQL VERSION =", require("mysql2/package.json").version);
