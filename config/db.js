@@ -12,3 +12,10 @@ const db = mysql.createConnection({
   database: process.env.MYSQLDATABASE,
   port: Number(process.env.MYSQLPORT)
 });
+console.log("DB OBJECT =", db);
+console.log("DB QUERY TYPE =", typeof db.query);
+
+module.exports = db;
+
+console.log("CONFIG DB LOADED");
+console.log(module.exports);
