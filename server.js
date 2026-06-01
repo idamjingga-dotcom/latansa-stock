@@ -8,7 +8,9 @@ const session = require("express-session");
 const path = require("path");
 const db = require("./config/db");
 
-
+console.log("DB TYPE =", typeof db);
+console.log("DB =", db);
+console.log("DB QUERY =", typeof db.query);
 const app = express();
 
 app.set("view engine", "ejs");
